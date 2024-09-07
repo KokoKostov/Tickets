@@ -10,30 +10,44 @@ const Catalog = () => {
 
   
     useEffect(() => {
-        const fetchUserAndTickets = async () => {
+        const fetchUser = async () => {
             try {
-                
-                const user = await api.get('/me');
-                setUserId(user.data._id);
-                
-               
-                const response = await fetch('http://localhost:5000/api/tickets');
-                if (!response.ok) {
-                    throw new Error('Failed to Fetch');
+                if (localStorage.getItem('refreshToken')) {
+                    const userResponse = await api.get('/me');
+                    setUserId(userResponse.data._id);
                 }
-                const data = await response.json();
-                
-                
-                const filteredTickets = data.filter(ticket => !ticket.buyer.includes(user.data._id));
-                setTickets(filteredTickets);
-
             } catch (err) {
-                console.error(err);
+                console.error('Error fetching user:', err);
             }
         };
 
+        const fetchTickets = async () => {
+            try {
+                const ticketResponse = await api.get('/tickets');
+                if (ticketResponse.status !== 200) {
+                    throw new Error('Failed to fetch tickets.');
+                }
+                
+                const ticketData = ticketResponse.data;
+
+                const filteredTickets = userId 
+                    ? ticketData.filter(ticket => !ticket.buyer.includes(userId))
+                    : ticketData;
+                    
+                setTickets(filteredTickets);
+            } catch (err) {
+                console.error('Error fetching tickets:', err);
+            }
+        };
+
+        const fetchUserAndTickets = async () => {
+            await fetchUser();
+            // Fetch tickets after userId has been set
+            await fetchTickets();
+        };
+
         fetchUserAndTickets();
-    }, []); 
+    }, [userId]); //
 
     const handleNext = () => {
         if (currentIndex === tickets.length - ticketsToShow) {

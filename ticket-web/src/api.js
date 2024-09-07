@@ -10,7 +10,6 @@ export const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         
-        console.log('1');
         const token = localStorage.getItem('accessToken');
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -32,27 +31,23 @@ api.interceptors.response.use(
               
                 
                 const refreshToken = localStorage.getItem('refreshToken')
-                console.log(refreshToken);
                 
                 if (!refreshToken) {
                     throw new Error('No refresh token available');
                 }
                 
                 
-                const response = await axios.post('http://localhost:5000/api/refreshToken',{}, {
+                const response = await axios.post('/refreshToken',{}, {
                     headers:{
 
                         'Authorization': `Bearer ${refreshToken}`
                     }
                 });
 
-                console.log('API Refresh', response);
+
                 const { accessToken } = response.data;
-
-             
                 localStorage.setItem('accessToken', accessToken);
-
-                
+                api.defaults.headers.common['Authorization']= `Bearer ${accessToken}`
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
                 

@@ -28,7 +28,6 @@ function App() {
       <Header/>
       <Routes>
     
-        {/* <Route path="/" element={<Card/>}/> */}
         <Route path="/" element={<Home/>}/>
         <Route path="/login" element={<Login/> }/>
         <Route path="/register" element={<Register/> }/>
@@ -39,7 +38,6 @@ function App() {
         <Route element={<ProtectedRoutes/>}>
         <Route path="/create" element={<CreateEvent/> }/>
         <Route path="/profile/:id" element={<Profile/> }/>
-
         </Route>
      
       </Routes>

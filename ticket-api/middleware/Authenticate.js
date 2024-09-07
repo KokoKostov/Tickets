@@ -3,8 +3,6 @@ const { verifyToken } = require('../helpers/helpers');
 const authenticateToken = async (req, res, next) => {
     
 
-   
-    
     const authHeader = req.headers['authorization'];
     
     

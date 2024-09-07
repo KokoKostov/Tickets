@@ -76,7 +76,7 @@ router.get('/tickets', async(req,res)=>{
     console.log('GET request received');
     try{
         const tickets= await Ticket.find();
-        console.log(`Fetched ticket:`,tickets);
+      
         res.status(200).json(tickets);
     }catch(err){
         console.error("Error", err.message);
@@ -195,12 +195,13 @@ router.post('/login', async(req,res)=>{
     
 })
 router.get('/me',authenticateToken,async(req,res)=>{
-    console.log('getting to /me');
+   
     
     try{
         const userId = req.user.userId;
-        
+       
         const user= await User.findById(userId);
+        
         console.log(user);
         
         if(!user){
