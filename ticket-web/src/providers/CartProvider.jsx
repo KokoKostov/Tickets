@@ -1,6 +1,5 @@
 import React, { createContext, useState, useContext } from 'react';
 import {api} from '../api'
-
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
@@ -10,6 +9,8 @@ export const CartProvider = ({ children }) => {
 
     const addToCart = (item) => {
       
+        
+       
         setCart([...cart, item]);
     };
 
@@ -20,9 +21,8 @@ export const CartProvider = ({ children }) => {
     const clearCart = () => {
         setCart([]);
     };
-
    const buyCartTicket = async (ticketId)=>{
-     const response= await api.post(`/tickets/${ticketId}/purchase`)
+    const response= await api.post(`/tickets/${ticketId}/purchase`)
      return response
    }
 
