@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import { useAuth } from '../../providers/AuthProvider'; 
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {api} from '../../api'
 
 const Login = () => {
@@ -21,17 +21,6 @@ const Login = () => {
 
         try {
             const response = await api.post("/login", formData) 
-            // {
-            //     method: "POST",
-            //     headers: {
-            //         "Content-Type": "application/json",
-            //     },
-            //     body: JSON.stringify({
-            //         username: formData.username,
-            //         password: formData.password
-                   
-            //     }),
-            // });
 
             const {refreshToken,accessToken}= response.data
             localStorage.setItem('accessToken', accessToken)
@@ -39,7 +28,7 @@ const Login = () => {
             navigate('/')
         } catch (error) {
             console.error("Error:", error);
-            alert("An error occurred while Logining in the account.");
+            alert("An error occurred while login in the account.");
         }
         
     };
@@ -91,8 +80,12 @@ const Login = () => {
               
 
                 <button className='' type="submit">Login</button>
+
+                <p className='m-2 text-md'>If you dont have an account click <NavLink to={'/register'} className='text-blue-700'>here!</NavLink></p>
             </form>
+            
         </div>
+      
         </div>
         </div>
     );

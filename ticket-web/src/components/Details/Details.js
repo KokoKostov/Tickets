@@ -51,6 +51,14 @@ function Details() {
             return window.alert('This item is already in your cart')
            
         }
+        console.log(userDetails);
+        
+
+        if(!userDetails){
+            window.alert('You need to Login to buy a ticket')
+            navigate('/login')
+            return
+        }
         addToCart(ticket)
         window.alert('Ticket has been added to your cart')
         navigate('/catalog')
@@ -99,7 +107,7 @@ function Details() {
                         ) : (
                             <div className='flex items-center justify-center m-4'>
                                 <button onClick={addHandler} className='bg-green-600 text-xl flex items-center justify-center transform hover:-translate-y-1 hover:scale-110'>
-                                    Buy
+                                    Add to cart
                                 </button>
                             </div>
                         )}

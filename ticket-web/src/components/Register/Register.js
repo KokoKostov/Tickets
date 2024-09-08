@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import { useAuth } from '../../providers/AuthProvider'; 
-import { useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import {api} from '../../api'
 const Register = () => {
     // const { setToken } = useAuth(); 
@@ -127,6 +127,7 @@ const Register = () => {
                 </div>
 
                 <button type="submit">Register</button>
+                <p className='m-2 text-md'>If you already have an account click <NavLink to={'/login'} className='text-blue-700'>here!</NavLink></p>
             </form>
         </div>
         </div>
