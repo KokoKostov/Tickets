@@ -32,12 +32,13 @@ function App() {
         <Route path="/login" element={<Login/> }/>
         <Route path="/register" element={<Register/> }/>
         <Route path= "/tickets/:id" element={<Details/> }/>
-        <Route path="/tickets/edit/:id" element={<Edit/>}/>
-        <Route path='/cart' element={<Cart/>}/>
         <Route path= "/catalog" element={<Catalog/>}/>
+
         <Route element={<ProtectedRoutes/>}>
-        <Route path="/create" element={<CreateEvent/> }/>
-        <Route path="/profile/:id" element={<Profile/> }/>
+          <Route path="/create" element={<CreateEvent/> }/>
+          <Route path="/profile/:id" element={<Profile/> }/>
+          <Route path='/cart' element={<Cart/>}/>
+          <Route path="/tickets/edit/:id" element={<Edit/>}/>
         </Route>
      
       </Routes>

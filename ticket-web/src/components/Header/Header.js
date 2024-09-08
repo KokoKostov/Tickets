@@ -76,7 +76,7 @@ const Header = () => {
             }
         }
         fetchData()
-    },[userId])
+    },[])
     
 
     return (
@@ -130,18 +130,7 @@ const Header = () => {
                                 <li className="p-2  hover:text-yellow-200">
                                     <NavLink to={`/profile/${userId}`}>My Profile</NavLink>
                                 </li>
-                            </>
-                        ) : (
-                            <>
-                                <li className="p-2 hover:text-yellow-200">
-                                    <NavLink to="/login">Login</NavLink>
-                                </li>
-                                <li className="p-2 hover:text-yellow-200">
-                                    <NavLink to="/register">Register</NavLink>
-                                </li>
-                            </>
-                        )}
-                          <li className="p-2 pr-4 text-2xl flex flex-col justify-end items-end hover:text-yellow-200  ">
+                                <li className="p-2 pr-4 text-2xl flex flex-col justify-end items-end hover:text-yellow-200  ">
                             <NavLink to="/cart"><FaShoppingCart />
                             </NavLink>
                            {cart.length!==0? 
@@ -149,6 +138,18 @@ const Header = () => {
                            : <></>}
                            
                         </li>
+                            </>
+                        ) : (
+                            <>
+                                <li className="p-2 hover:text-yellow-200">
+                                    <NavLink to="/login">Login</NavLink>
+                                </li>
+                                <li className="p-2 pr-4 hover:text-yellow-200">
+                                    <NavLink to="/register">Register</NavLink>
+                                </li>
+                            </>
+                        )}
+                         
                     </ul>
                 </div>
             </div>
