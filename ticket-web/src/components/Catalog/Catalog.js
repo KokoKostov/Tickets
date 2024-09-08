@@ -42,12 +42,12 @@ const Catalog = () => {
 
         const fetchUserAndTickets = async () => {
             await fetchUser();
-            // Fetch tickets after userId has been set
+           
             await fetchTickets();
         };
 
         fetchUserAndTickets();
-    }, [userId]); //
+    }, [userId]); 
 
     const handleNext = () => {
         if (currentIndex === tickets.length - ticketsToShow) {

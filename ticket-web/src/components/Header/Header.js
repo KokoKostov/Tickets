@@ -46,18 +46,28 @@ const Header = () => {
                 setSearchData([]);
             }
         };
+       
+        
 
         fetchData();
     }, [search]);
+
+    
+
     useEffect(()=>{
         const fetchData = async ()=>{
             if(!localStorage.getItem('refreshToken')){
                 return
             }
+            console.log(1);
+            
             try{
                 
                 const res = await api.get(`/me`)
+
                 setUserId(res.data._id );
+              
+                
 
                 
             }catch(err){
@@ -67,6 +77,7 @@ const Header = () => {
         }
         fetchData()
     },[userId])
+    
 
     return (
         <div className="flex items-center bg-white bg-opacity-30 w-full">
