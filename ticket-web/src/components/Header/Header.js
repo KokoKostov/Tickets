@@ -6,17 +6,14 @@ import { api } from '../../api';
 import { FaShoppingCart } from "react-icons/fa";
 import { useCart } from '../../providers/CartProvider';
 
-
 const Header = () => {
-    const { logout } = useAuth();
+    const { token, refreshToken, user, logout } = useAuth();
     const [search, setSearch] = useState('');
     const [searchData, setSearchData] = useState([]);
-    const [userId, setUserId] = useState('')
-    const {cart} = useCart()
+    const { cart } = useCart();
     const navigate = useNavigate();
 
-    const currentUser = localStorage.getItem('refreshToken');
-
+    const isLoggedIn = !!refreshToken; 
     const handleLogout = () => {
         logout();
         navigate('/');
@@ -27,15 +24,14 @@ const Header = () => {
     };
 
     const handleNavigation = (ticketId) => {
-        
         navigate(`/tickets/${ticketId}`, { replace: true });
         setSearch(''); 
-      
     };
 
+    
     useEffect(() => {
-        const fetchData = async () => {
-            if (search !== '') {
+        const timeoutId = setTimeout(async () => {
+            if (search.trim() !== '') {
                 try {
                     const res = await api.get(`/search/${search}`);
                     setSearchData(res.data);
@@ -45,49 +41,23 @@ const Header = () => {
             } else {
                 setSearchData([]);
             }
-        };
-       
-        
+        }, 300);
 
-        fetchData();
-    }, [search]);
-
-    
-
-    useEffect(()=>{
-        const fetchData = async ()=>{
-            if(!localStorage.getItem('refreshToken')){
-                return
-            }
-            console.log(1);
-            
-            try{
-                
-                const res = await api.get(`/me`)
-
-                setUserId(res.data._id );
-              
-                
-
-                
-            }catch(err){
-                console.log(err);
-                
-            }
-        }
-        fetchData()
-    },[])
-    
+        return () => clearTimeout(timeoutId);
+    }, [search, token]);
 
     return (
         <div className="flex items-center bg-white bg-opacity-30 w-full">
-            <div className="flex justify-between items-center w-full font-medium">
+            <div className="flex justify-between items-center w-full font-medium relative">
+               
                 <div className="flex p-4 items-center justify-center">
                     <NavLink to="/">
                         <img className="h-[70px] w-[80px] rounded-full" src={myLogo} alt="Logo" />
                     </NavLink>
                 </div>
-                <div className="flex flex-col items-center justify-center absolute top-8 right-1/4 left-1/4 inset-100">
+
+              
+                <div className="flex flex-col items-center justify-center absolute top-8 right-1/4 left-1/4">
                     <input
                         className="rounded-xl w-96 text-xl p-2 focus:outline-none text-start"
                         placeholder="Search"
@@ -96,48 +66,55 @@ const Header = () => {
                         onChange={handleChange}
                         value={search}
                     />
-                    <div className="bg-white flex flex-col w-96 h-fit mt-2 z-10">
-                        {searchData.map((data) => (
-                            <li
-                                key={data._id}
-                                className="list-none flex justify-between items-center py-1 hover:bg-slate-200 cursor-pointer"
-                                onClick={() => handleNavigation(data._id)}
-                            >
-                                <p className="ml-1 pl-1 py-1">
-                                    {data.name}, {data.location}
-                                </p>
-                                <img src={data.image} className="w-[60px] h-[50px]" alt={`${data.name} thumbnail`} />
-                            </li>
-                        ))}
-                    </div>
+                    {searchData.length > 0 && (
+                        <div className="bg-white flex flex-col w-96 h-fit mt-2 z-10 border border-gray-300 rounded-md shadow-lg">
+                            <ul>
+                                {searchData.map((data) => (
+                                    <li
+                                        key={data._id}
+                                        className="list-none flex justify-between items-center py-1 px-2 hover:bg-slate-200 cursor-pointer"
+                                        onClick={() => handleNavigation(data._id)}
+                                    >
+                                        <p className="ml-1 pl-1 py-1">
+                                            {data.name}, {data.location}
+                                        </p>
+                                        <img src={data.image} className="w-[60px] h-[50px]" alt={`${data.name} thumbnail`} />
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
+
+             
                 <div className="flex">
-                    <ul className="flex text-lg ">
+                    <ul className="flex text-lg">
                         <li className="p-2 hover:text-yellow-200">
                             <NavLink to="/catalog">Browse</NavLink>
                         </li>
-                      
-                        {currentUser ? (
+                        {isLoggedIn ? (
                             <>
                                 <li className="p-2 hover:text-yellow-200">
                                     <NavLink to="/create">Create</NavLink>
                                 </li>
-                                <li className="p-2  list-none hover:text-yellow-200">
+                                <li className="p-2 list-none hover:text-yellow-200">
                                     <p className="cursor-pointer" onClick={handleLogout}>
                                         Logout
                                     </p>
                                 </li>
-                                <li className="p-2  hover:text-yellow-200">
-                                    <NavLink to={`/profile/${userId}`}>My Profile</NavLink>
+                                <li className="p-2 hover:text-yellow-200">
+                                    <NavLink to={`/profile/${user?._id}`}>My Profile</NavLink>
                                 </li>
-                                <li className="p-2 pr-4 text-2xl flex flex-col justify-end items-end hover:text-yellow-200  ">
-                            <NavLink to="/cart"><FaShoppingCart />
-                            </NavLink>
-                           {cart.length!==0? 
-                           <p className='text-xs text-yellow-500 bg-red-600 rounded-full flex items-center justify-center w-4'>{cart.length}</p>
-                           : <></>}
-                           
-                        </li>
+                                <li className="p-2 pr-4 text-2xl flex flex-col justify-end items-end hover:text-yellow-200 relative">
+                                    <NavLink to="/cart">
+                                        <FaShoppingCart />
+                                    </NavLink>
+                                    {cart.length !== 0 && (
+                                        <span className='absolute top-0 right-0 text-xs text-white bg-red-600 rounded-full flex items-center justify-center w-4 h-4'>
+                                            {cart.length}
+                                        </span>
+                                    )}
+                                </li>
                             </>
                         ) : (
                             <>
@@ -149,7 +126,6 @@ const Header = () => {
                                 </li>
                             </>
                         )}
-                         
                     </ul>
                 </div>
             </div>

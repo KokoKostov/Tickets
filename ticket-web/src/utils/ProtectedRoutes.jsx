@@ -3,7 +3,7 @@ import { Navigate, Outlet,  } from "react-router-dom"
 
 const ProtectedRoutes= ()=>{
    
-    const currentUser = localStorage.getItem('refreshToken')
+    const currentUser = localStorage.getItem('accessToken')
    return  currentUser? <Outlet/> : <Navigate to="/login"/>
    
 }

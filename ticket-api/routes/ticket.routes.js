@@ -8,20 +8,9 @@ const authenticateToken = require('../middleware/Authenticate');
 const router = express.Router();
 
 router.post('/tickets',authenticateToken, async (req, res) => {
-    
-    // try {
-    //     const newTicket = new Ticket(req.body);
-    //     await newTicket.save();
-    //     console.log('Ticket created:', newTicket); 
-    //     res.status(201).json(newTicket);
-    // } catch (err) {
-    //     console.error('Error saving ticket:', err.message); 
-    //     res.status(400).json({ error: err.message });
-    // }
-  
+   
     try {
-        
-        
+
         const userId= req.user.userId
         console.log(userId);
         
@@ -103,26 +92,7 @@ router.get('/tickets/:_id', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
-// router.get('/users/:id',async(req,res)=>{
-//     try{
-        
-        
-//         const id = req.params.id;
-//         const user= await User.findById(id)
-//         if(!user){
-//             return res.status(404).json({
-//                 message: 'User not found'
-//             })
-//         }
-//         console.log(user);
-        
-//         res.status(200).json(user)
-//     }
-//     catch(err){
-//         constole.error(err)
-//         res.status(500).json({err:"Internal Server Error"})
-//     }
-// })
+
 router.post('/users', async (req, res) => {
     console.log('Received POST request with data:', req.body);
 

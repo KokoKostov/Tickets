@@ -18,16 +18,13 @@ export const CartProvider = ({ children }) => {
         setCart(cart.filter(item => item._id !== itemId));
     };
 
-    const clearCart = () => {
-        setCart([]);
-    };
    const buyCartTicket = async (ticketId)=>{
     const response= await api.post(`/tickets/${ticketId}/purchase`)
      return response
    }
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart,buyCartTicket, useCart }}>
+        <CartContext.Provider value={{ cart, addToCart, removeFromCart,buyCartTicket, useCart }}>
             {children}
         </CartContext.Provider>
     );
