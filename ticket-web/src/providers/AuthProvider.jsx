@@ -19,8 +19,10 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await api.get('/me');
+                const response = await api.get('/me');          
                 setUser(response.data);
+                console.log(user);
+                
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
             }

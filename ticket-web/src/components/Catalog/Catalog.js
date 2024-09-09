@@ -1,71 +1,82 @@
 import { useEffect, useState } from "react";
 import TicketCard from "../TicketCard/TicketCard";
-import api from "../../api";
+import { api } from "../../api";
+import { useAuth } from "../../providers/AuthProvider";
 
 const Catalog = () => {
     const [tickets, setTickets] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
     const [userId, setUserId] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const ticketsToShow = 4;
 
-  
+    const { user } = useAuth();
+
+    const fetchTickets = async () => {
+        try {
+            const ticketResponse = await api.get('/tickets');
+            if (ticketResponse.status !== 200) {
+                throw new Error('Failed to fetch tickets.');
+            }
+
+            const ticketData = ticketResponse.data;
+            const filteredTickets = userId
+                ? ticketData.filter(ticket => !ticket.buyer.includes(userId))
+                : ticketData;
+
+            setTickets(filteredTickets);
+        } catch (err) {
+            console.error('Error fetching tickets:', err);
+            setError('Failed to load tickets'); 
+        } finally {
+            setLoading(false); 
+        }
+    };
+
     useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                if (localStorage.getItem('refreshToken')) {
-                    const userResponse = await api.get('/me');
-                    setUserId(userResponse.data._id);
-                }
-            } catch (err) {
-                console.error('Error fetching user:', err);
-            }
-        };
-
-        const fetchTickets = async () => {
-            try {
-                const ticketResponse = await api.get('/tickets');
-                if (ticketResponse.status !== 200) {
-                    throw new Error('Failed to fetch tickets.');
-                }
-                
-                const ticketData = ticketResponse.data;
-
-                const filteredTickets = userId 
-                    ? ticketData.filter(ticket => !ticket.buyer.includes(userId))
-                    : ticketData;
-                    
-                setTickets(filteredTickets);
-            } catch (err) {
-                console.error('Error fetching tickets:', err);
-            }
-        };
-
         const fetchUserAndTickets = async () => {
-            await fetchUser();
-           
-            await fetchTickets();
+            try {
+                if (user && user._id) {
+                    setUserId(user._id);
+                }
+                await fetchTickets();
+            } catch (err) {
+                console.error('Error fetching user and tickets:', err);
+                setError('Failed to load user data');
+            }
         };
 
         fetchUserAndTickets();
-    }, [userId]); 
+    }, [user]); 
 
     const handleNext = () => {
-        if (currentIndex === tickets.length - ticketsToShow) {
-            setCurrentIndex(0);
-        }
         if (currentIndex < tickets.length - ticketsToShow) {
             setCurrentIndex(currentIndex + 1);
+        } else {
+            setCurrentIndex(0);
         }
     };
 
     const handlePrev = () => {
-        if (currentIndex === 0) {
-            setCurrentIndex(tickets.length - ticketsToShow);
-        }
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
+        } else {
+            setCurrentIndex(tickets.length - ticketsToShow); 
         }
     };
+
+    if (loading) {
+        return (
+            <div>Loading...</div> 
+        );
+    }
+
+    if (error) {
+        return (
+            <div>{error}</div>
+        );
+    }
 
     return (
         <div className="h-screen flex items-center justify-center">
@@ -84,7 +95,7 @@ const Catalog = () => {
                         >
                             {tickets.length > 0 ? (
                                 tickets.map((ticket) => (
-                                    <div key={ticket.id} className="flex-shrink-0">
+                                    <div key={ticket._id} className="flex-shrink-0">
                                         <TicketCard ticket={ticket} />
                                     </div>
                                 ))
