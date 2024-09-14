@@ -14,7 +14,7 @@ const Cart = () => {
         removeFromCart(id)
        
     }
-    navigate('/catalog')
+    navigate('/')
     
    }
 

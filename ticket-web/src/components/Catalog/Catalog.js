@@ -6,8 +6,8 @@ import { useAuth } from "../../providers/AuthProvider";
 const Catalog = () => {
     const [tickets, setTickets] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [userId, setUserId] = useState(null);
-    const [loading, setLoading] = useState(true);
+    
+ 
     const [error, setError] = useState(null);
     const ticketsToShow = 4;
 
@@ -21,34 +21,29 @@ const Catalog = () => {
             }
 
             const ticketData = ticketResponse.data;
-            const filteredTickets = userId
-                ? ticketData.filter(ticket => !ticket.buyer.includes(userId))
+      
+            
+            const filteredTickets = user && user._id
+                ? ticketData.filter(ticket => !ticket.buyer.includes(user._id))
                 : ticketData;
-
+             
+              
             setTickets(filteredTickets);
+           console.log(filteredTickets);
+           
         } catch (err) {
             console.error('Error fetching tickets:', err);
             setError('Failed to load tickets'); 
-        } finally {
-            setLoading(false); 
-        }
+        } 
     };
 
     useEffect(() => {
-        const fetchUserAndTickets = async () => {
-            try {
-                if (user && user._id) {
-                    setUserId(user._id);
-                }
-                await fetchTickets();
-            } catch (err) {
-                console.error('Error fetching user and tickets:', err);
-                setError('Failed to load user data');
-            }
-        };
 
-        fetchUserAndTickets();
+        fetchTickets()
+          
     }, [user]); 
+
+
 
     const handleNext = () => {
         if (currentIndex < tickets.length - ticketsToShow) {
@@ -66,11 +61,7 @@ const Catalog = () => {
         }
     };
 
-    if (loading) {
-        return (
-            <div>Loading...</div> 
-        );
-    }
+
 
     if (error) {
         return (

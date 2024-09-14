@@ -1,5 +1,5 @@
 
-
+import React, { Suspense } from "react";
 import Header from "./components/Header/Header";
 import ProtectedRoutes from "./utils/ProtectedRoutes"
 import  "./App.css"
@@ -10,11 +10,13 @@ import Register from "./components/Register/Register";
 import Details from "./components/Details/Details";
 import { AuthProvider } from "./providers/AuthProvider";
 import Home from "./components/Home/Home";
-import Catalog from "./components/Catalog/Catalog";
+// import Catalog from "./components/Catalog/Catalog";
 import Edit from "./components/Edit/Edit";
 import Profile from "./components/Profile/Profile";
 import { CartProvider } from "./providers/CartProvider";
 import Cart from "./components/Cart/Cart";
+
+const LazyCatalog = React.lazy(()=>import('./components/Catalog/Catalog'))
 
 
 function App() {
@@ -32,7 +34,14 @@ function App() {
         <Route path="/login" element={<Login/> }/>
         <Route path="/register" element={<Register/> }/>
         <Route path= "/tickets/:id" element={<Details/> }/>
-        <Route path= "/catalog" element={<Catalog/>}/>
+        <Route
+              path="/catalog"
+              element={
+                <Suspense fallback={<div>Loading...11</div>}>
+                  <LazyCatalog />
+                </Suspense>
+              }
+            />
 
         <Route element={<ProtectedRoutes/>}>
           <Route path="/create" element={<CreateEvent/> }/>

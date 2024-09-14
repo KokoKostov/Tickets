@@ -18,17 +18,21 @@ export const AuthProvider = ({ children }) => {
      
     useEffect(() => {
         const fetchUserData = async () => {
+            if(!token){
+                return
+            }
             try {
                 const response = await api.get('/me');          
                 setUser(response.data);
-                console.log(user);
+               
+                
                 
             } catch (error) {
                 console.error('Failed to fetch user data:', error);
             }
         };
         fetchUserData();
-    }, []);
+    }, [token]);
     useEffect(() => {
         if (token) {
             localStorage.setItem('accessToken', token);
@@ -46,13 +50,14 @@ export const AuthProvider = ({ children }) => {
    
     const login = (accessToken, refreshToken) => {
         
-        
+       
         setToken(accessToken);
         setRefreshToken(refreshToken);
     };
 
   
     const logout = () => {
+        setUser(null)
         setToken(null);
         setRefreshToken(null);
         localStorage.removeItem('accessToken');
