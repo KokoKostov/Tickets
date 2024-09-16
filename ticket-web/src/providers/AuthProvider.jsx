@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
         };
         fetchUserData();
     }, [token]);
+    
     useEffect(() => {
         if (token) {
             localStorage.setItem('accessToken', token);

@@ -82,7 +82,6 @@ function Details() {
                             <p>{ticket.description}</p>
                         </div>
 
-                        {/* Conditional rendering for ticket actions */}
                         {user && ticket.user === user._id ? (
                             <div className='flex items-center justify-between m-4 align-bottom'>
                                 <Link to={`/tickets/edit/${ticket._id}`}>
