@@ -12,6 +12,7 @@ import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
 import Home from "./components/Home/Home";
 import Edit from "./components/Edit/Edit";
+import Loading from "./components/Loading/Loading";
 
 const LazyCart = React.lazy(()=>import('./components/Cart/Cart'))
 const LazyDetails = React.lazy(()=>import('./components/Details/Details'))
@@ -34,7 +35,7 @@ function App() {
           <Route
                 path="/tickets/:id"
                 element={
-                  <Suspense fallback={<div>Loading...11</div>}>
+                  <Suspense fallback={<div>{Loading}</div>}>
                     <LazyDetails />
                   </Suspense>
                 }
@@ -42,7 +43,7 @@ function App() {
           <Route
                 path="/catalog"
                 element={
-                  <Suspense fallback={<div>Loading...11</div>}>
+                  <Suspense fallback={<div>{Loading}</div>}>
                     <LazyCatalog />
                   </Suspense>
                 }
@@ -52,7 +53,7 @@ function App() {
           <Route
                 path="/profile/:id"
                 element={
-                  <Suspense fallback={<div>Loading...11</div>}>
+                  <Suspense fallback={<div>{Loading}</div>}>
                     <LazyProfile />
                   </Suspense>
                 }
@@ -60,7 +61,7 @@ function App() {
           <Route
                 path="/cart"
                 element={
-                  <Suspense fallback={<div>Loading...11</div>}>
+                  <Suspense fallback={<div>{Loading}</div>}>
                     <LazyCart />
                   </Suspense>
                 }
