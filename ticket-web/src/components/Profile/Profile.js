@@ -1,28 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import api from '../../api'
 import TicketCard from '../TicketCard/TicketCard'
-
+import {useAuth} from '../../providers/AuthProvider'
 const Profile = () => {
     
-    const [user, setUser] = useState(null);
     const [tickets, setTickets] = useState([]);
     const [boughtTickets, setBoughtTickets] = useState(true);
-  
+    const {user} = useAuth()
+
     useEffect(() => {
-        const fetchUserAndTickets = async () => {
+        const fetchTicket = async () => {
             try {
-               
-                const userResponse = await api.get('/me');
-                setUser(userResponse.data);
-                
-             
+
                 const ticketsResponse = await api.get('/tickets'); 
-                const data = ticketsResponse.data;
-                
-              
+                const ticketData = ticketsResponse.data;
+
                 const filteredTickets = boughtTickets 
-                ? data.filter(ticket => ticket.buyer.includes(userResponse.data._id) ) 
-                : data.filter(ticket => ticket.user === userResponse.data._id);
+                ? ticketData.filter(ticket => ticket.buyer.includes(user._id) ) 
+                : ticketData.filter(ticket => ticket.user === user._id);
 
                 setTickets(filteredTickets);
             } catch (err) {
@@ -30,14 +25,14 @@ const Profile = () => {
             } 
         };
 
-        fetchUserAndTickets();
-    }, [boughtTickets]); 
+        fetchTicket();
+    }, [boughtTickets,user]); 
 
     return (
         <div className='h-screen flex items-center justify-center'>
             <div className="flex h-fit w-fit items-center justify-center bg-gradient-to-t from-blue-800 to-purple-800 rounded-xl">
                 <div className='h-[700px] w-[1200px] m-3 bg-white bg-opacity-20 flex flex-col justify-start items-center '>
-                    <div className='w-40 h-20 flex justify-center m-2  '>
+                    <div className='w-40 h-20 flex justify-center m-2 items-center  '>
                         {boughtTickets ? (
                             <button 
                                 onClick={() => setBoughtTickets(false)} 
@@ -53,26 +48,15 @@ const Profile = () => {
                         )}
                     </div>
 
-
-
-                    <div className='flex flex-wrap overflow-y-auto justify-start bg-black bg-opacity-40 p-4 w-full h-full'>
-                    
-                    {boughtTickets? (
-                        tickets.map((ticket) => (
+                    <div className='flex flex-wrap overflow-y-auto justify-start bg-black bg-opacity-40 p-4 w-full h-full'>                  
+                    {tickets.map((ticket) => (
                             <div key={ticket.id} className="flex-shrink-0">
                                 <TicketCard ticket={ticket} />
                             </div>
-                        ))
-                    ) : 
-                        (
-                            tickets.map((ticket) => (
-                                <div key={ticket.id} className="flex-shrink-0">
-                                    <TicketCard ticket={ticket} />
-                                </div>
-                            ))
-                        )}
+                        ))}
                         </div>
                 </div>
+
             </div>
         </div>
     )
